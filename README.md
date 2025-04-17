@@ -30,7 +30,7 @@ src/
 1. Clone o repositório:
 
 ```bash
-git clone https://github.com/seu-usuario/horus-engine.git
+git clone https://github.com/compbruno/horus-engine.git
 cd horus-engine
 ```
 
@@ -61,7 +61,7 @@ A engine utiliza um sistema de tempo (`Time.java`) para garantir que o jogo rode
 ## ✍️ Autor
 
 **Bruno** – Desenvolvedor e entusiasta de engines.  
-[GitHub](https://github.com/seu-usuario)
+[GitHub](https://github.com/compbruno)
 
 ---
 
