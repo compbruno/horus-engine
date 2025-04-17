@@ -6,6 +6,8 @@ import engine.utils.Time;
 public class Engine {
     private Window window;
 
+    private boolean running = true;
+
     public void run() {
         init();
         loop();
@@ -18,16 +20,30 @@ public class Engine {
     }
 
     private void loop() {
-        while (!window.shouldClose()) {
+        while (!window.shouldClose() && running) {
             Time.update();
 
-            if (Input.isKeyPressed(256)) { // ESC
-                System.out.println("Encerrando...");
-                break;
-            }
+            processInput();
+            update();
+            render();
 
             window.update();
         }
+    }
+
+    private void processInput() {
+        if (Input.isKeyPressed(256)) { 
+            System.out.println("Encerrando...");
+            running = false;
+        }
+    }
+
+    private void update() {
+        // Lógica de atualização do jogo
+    }
+
+    private void render() {
+        window.clear();
     }
 
     private void cleanup() {

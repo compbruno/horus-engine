@@ -9,7 +9,6 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.*;
 import static org.lwjgl.opengl.GL11.*;
 
-
 public class Window {
     private long window;
     private int width, height;
@@ -63,5 +62,9 @@ public class Window {
 
     public long getWindowHandle() {
         return window;
+    }
+
+    public void clear() {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 }
