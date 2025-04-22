@@ -1,5 +1,8 @@
 package engine.core;
 
+import engine.graphics.Loader;
+import engine.graphics.RawModel;
+import engine.graphics.Renderer;
 import engine.input.Input;
 import engine.utils.Time;
 
@@ -7,6 +10,12 @@ public class Engine {
     private Window window;
 
     private boolean running = true;
+
+    private RawModel model;
+
+    private Renderer renderer;
+
+    private Loader loader;
 
     public void run() {
         init();
@@ -17,6 +26,22 @@ public class Engine {
     private void init() {
         window = new Window(800, 600, "Horus Engine");
         window.create();
+        
+        loader = new Loader();
+        renderer = new Renderer();
+
+        float[] vertices = {
+            // Left top
+            -0.5f,  0.5f, 0.0f,
+            -0.5f, -0.5f, 0.0f,
+            0.5f, 0.5f, 0.0f,
+            // Right bottom
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            0.5f, 0.5f, 0.0f,
+       };
+
+       model = loader.loadToVAO(vertices);
     }
 
     private void loop() {
@@ -44,9 +69,12 @@ public class Engine {
 
     private void render() {
         window.clear();
+
+        renderer.render(model);
     }
 
     private void cleanup() {
+        loader.cleanUp();
         window.cleanup();
     }
 }
