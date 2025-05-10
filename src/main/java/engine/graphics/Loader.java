@@ -3,6 +3,7 @@ package engine.graphics;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,11 +24,12 @@ public class Loader {
 
     private final int VERTEX_SIZE = 3; // 3 floats per vertex (x, y, z)
 
-    public RawModel loadToVAO(float[] positions) {
+    public RawModel loadToVAO(float[] positions, int[] indices) {
         int vaoID = createVAO();
+        bindIndicesBuffer(indices);
         storeDataInAttributeList(0, positions);
         unbindVAO();
-        return new RawModel(vaoID, positions.length / VERTEX_SIZE);
+        return new RawModel(vaoID, indices.length);
     }
 
     public void cleanUp() {
@@ -72,5 +74,22 @@ public class Loader {
 
     private void unbindVAO() {
         glBindVertexArray(0);
+    }
+
+    private void bindIndicesBuffer(int[] indices) {
+        int vboID = glGenBuffers();
+        vbos.add(vboID);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboID);
+
+        IntBuffer buffer = storeDataInIntBuffer(indices);
+
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+    }
+
+    private IntBuffer storeDataInIntBuffer(int[] data) {
+        IntBuffer buffer = BufferUtils.createIntBuffer(data.length);
+        buffer.put(data);
+        buffer.flip();
+        return buffer;
     }
 }

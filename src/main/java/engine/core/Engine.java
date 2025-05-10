@@ -3,19 +3,17 @@ package engine.core;
 import engine.graphics.Loader;
 import engine.graphics.RawModel;
 import engine.graphics.Renderer;
+import engine.graphics.shaders.StaticShader;
 import engine.input.Input;
 import engine.utils.Time;
 
 public class Engine {
-    private Window window;
-
-    private boolean running = true;
-
-    private RawModel model;
-
-    private Renderer renderer;
-
     private Loader loader;
+    private Window window;
+    private RawModel model;
+    private Renderer renderer;
+    private boolean running = true;
+    private StaticShader shader;
 
     public void run() {
         init();
@@ -26,22 +24,23 @@ public class Engine {
     private void init() {
         window = new Window(800, 600, "Horus Engine");
         window.create();
-        
+        shader = new StaticShader();
         loader = new Loader();
         renderer = new Renderer();
 
         float[] vertices = {
-            // Left top
-            -0.5f,  0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
-            0.5f, 0.5f, 0.0f,
-            // Right bottom
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            0.5f, 0.5f, 0.0f,
+            -0.5f,  0.5f, 0.0f, // V0
+            -0.5f, -0.5f, 0.0f, // V1
+            0.5f, 0.5f, 0.0f,   // V2
+            0.5f, -0.5f, 0.0f   // V3
        };
 
-       model = loader.loadToVAO(vertices);
+       int[] indices = {
+            0, 1, 2,
+            1, 3, 2
+        };
+
+        model = loader.loadToVAO(vertices, indices);
     }
 
     private void loop() {
@@ -69,11 +68,13 @@ public class Engine {
 
     private void render() {
         window.clear();
-
+        shader.start();
         renderer.render(model);
+        shader.stop();
     }
 
     private void cleanup() {
+        shader.cleanup();
         loader.cleanUp();
         window.cleanup();
     }
