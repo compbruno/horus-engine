@@ -1,7 +1,9 @@
 package engine.core;
 
 import engine.graphics.Loader;
-import engine.graphics.RawModel;
+import engine.models.RawModel;
+import engine.models.TextureModel;
+import engine.textures.ModelTexture;
 import engine.graphics.Renderer;
 import engine.graphics.shaders.StaticShader;
 import engine.input.Input;
@@ -11,6 +13,7 @@ public class Engine {
     private Loader loader;
     private Window window;
     private RawModel model;
+    private TextureModel textureModel;
     private Renderer renderer;
     private boolean running = true;
     private StaticShader shader;
@@ -22,7 +25,7 @@ public class Engine {
     }
 
     private void init() {
-        window = new Window(800, 600, "Horus Engine");
+        window = new Window(1024, 768, "Horus Engine");
         window.create();
         shader = new StaticShader();
         loader = new Loader();
@@ -40,7 +43,16 @@ public class Engine {
             1, 3, 2
         };
 
-        model = loader.loadToVAO(vertices, indices);
+        float[] textureCoords = {
+            0, 1,
+            0, 0,
+            1, 1,
+            1, 0
+        };
+
+        model = loader.loadToVAO(vertices, textureCoords, indices);
+        ModelTexture texture = new ModelTexture(loader.loadTexture("shrek"));
+        textureModel = new TextureModel(model, texture);
     }
 
     private void loop() {
@@ -69,7 +81,9 @@ public class Engine {
     private void render() {
         window.clear();
         shader.start();
-        renderer.render(model);
+
+        renderer.render(textureModel);
+
         shader.stop();
     }
 

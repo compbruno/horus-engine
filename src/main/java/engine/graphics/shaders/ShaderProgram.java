@@ -3,8 +3,12 @@ package engine.graphics.shaders;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.FloatBuffer;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL20;
 
 public abstract class ShaderProgram {
@@ -26,6 +30,20 @@ public abstract class ShaderProgram {
         GL20.glUseProgram(0);
     }
 
+    public void setUniform(String name, float value) {
+        int location = GL20.glGetUniformLocation(programID, name);
+        if (location != -1) {
+            GL20.glUniform1f(location, value);
+        }
+    }
+
+    public void setUniform(String name, float x, float y) {
+        int location = GL20.glGetUniformLocation(programID, name);
+        if (location != -1) {
+            GL20.glUniform2f(location, x, y);
+        }
+    }
+
     public void cleanup() {
         stop();
         GL20.glDetachShader(programID, vertexShaderID);
@@ -40,6 +58,34 @@ public abstract class ShaderProgram {
     protected void bindAttribute(int attribute, String variableName){
 		GL20.glBindAttribLocation(programID, attribute, variableName);
 	}
+
+    protected abstract void getAllUniformLocations();
+
+    protected int getUniformLocation(String uniformName) {
+        return GL20.glGetUniformLocation(programID, uniformName);
+    }
+
+    protected void loadFloat(int location, float value) {
+        GL20.glUniform1f(location, value);
+    }
+
+    protected void loadVector(int location, Vector3f vector) {
+        GL20.glUniform3f(location, vector.x , vector.y, vector.z);
+    }
+
+    protected void loadBoolean(int location, boolean value) {
+        float toLoad = 0;
+        if (value) {
+            toLoad = 1;
+        }
+        GL20.glUniform1f(location, toLoad);
+    }
+
+    protected void loadMatrix(int location, Matrix4f matrix) {
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
+        matrix.get(buffer);
+        GL20.glUniformMatrix4fv(location, false, buffer);
+    }
 
     private static int loadShader(String file, int type) {
 		StringBuilder shaderSource = new StringBuilder();
